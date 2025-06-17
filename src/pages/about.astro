@@ -8,56 +8,67 @@ const permalink = `${Astro.site.href}about`;
 
 <BaseLayout title={title} description={description} permalink={permalink} current="about">
   <div class="container">
-    <h1>About</h1>
-    <!-- <figure class="about-image">
-      <img src="/assets/about-illustration.webp" alt="Illustration of a notebook" width="330">
-      <figcaption>
-        Illustration by
-        <a href="https://icons8.com/illustrations/author/5c07e68d82bcbc0092519bb6" target="_blank" rel="noopener">Icons 8</a>
-        from
-        <a href="https://icons8.com/illustrations" target="_blank" rel="noopener">Ouch!</a>
-      </figcaption>
-    </figure>-->
+    <div class="intro-flex">
+      <div class="text">
+        <p>
+          Hi! I’m <strong>André Franco</strong>, a fullstack developer from <strong>Portugal</strong> with over
+          <strong>10 years of experience</strong> building scalable, user-focused applications.
+          My work spans both frontend and backend development, with solid expertise in technologies like
+          <strong>Angular, Java, Python, PHP</strong>, and <strong>Laravel</strong>.
+        </p>
+      </div>
+      <figure class="about-image">
+        <img src="/assets/profile-pic.webp" alt="Profile pic" width="200">
+      </figure>
+    </div>
+
     <p>
-		Hi! I’m <strong>André Franco</strong>, a fullstack developer from <strong>Portugal</strong> with over
-		<strong>10 years of experience</strong> building scalable, user-focused applications.
-		My work spans both frontend and backend development, with solid expertise in technologies like
-		<strong>Angular, Java, Python, PHP</strong>, and <strong>Laravel</strong>.
-	</p>
-	<p>
-		I thrive at the intersection of clean code and purposeful design — always aiming to deliver solutions
-		that are both technically sound and intuitive for users.
-	</p>
-	<p>
-		I'm a <strong>native Portuguese speaker</strong>, fluent in <strong>professional-level English</strong>,
-		and I've had the privilege of working with international teams and diverse projects throughout my career.
-	</p>
-	<p>
-		When I'm not coding, you'll likely find me <strong>running</strong> or <strong>playing music</strong>,
-		two passions that keep me balanced and inspired.
-	</p>
-	<!--<p>
-		Thanks for stopping by! Feel free to explore my work or <a href="#contact">get in touch</a> if you’d like to collaborate.
-	</p>-->
+      I thrive at the intersection of clean code and purposeful design — always aiming to deliver solutions
+      that are both technically sound and intuitive for users.
+    </p>
+    <p>
+      I'm a <strong>native Portuguese speaker</strong>, fluent in <strong>professional-level English</strong>,
+      and I've had the privilege of working with international teams and diverse projects throughout my career.
+    </p>
+    <p>
+      When I'm not coding, you'll likely find me <strong>running</strong> or <strong>playing music</strong>,
+      two passions that keep me balanced and inspired.
+    </p>
   </div>
 </BaseLayout>
 
 <style>
+  .intro-flex {
+    display: flex;
+    align-items: flex-start;
+    gap: 2em;
+    margin-bottom: 2em;
+  }
+
+  .text {
+    flex: 1;
+  }
+
   .about-image {
-    float: right;
-    margin: -3em -7em 2em 2em;
-    max-width: 300px;
+    flex-shrink: 0;
+    max-width: 200px;
   }
 
   .about-image img {
     border-radius: 8px;
-    margin-bottom: 1.5em;
+    max-width: 100%;
+    height: auto;
+    margin-top: 2em;
   }
 
-  @media (max-width: 1020px) {
+  @media (max-width: 768px) {
+    .intro-flex {
+      flex-direction: column;
+      align-items: center;
+    }
+
     .about-image {
-      float: none;
-      margin: 0 auto 2em;
+      margin-top: 10em;
     }
   }
 </style>
