@@ -1,86 +1,228 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/index.css";
 
-const title = "Home | André Franco";
-const description = "Welcome to my blog";
-const permalink = Astro.site.href;
+import ProfilePicture from "../assets/profile-pic.webp";
+
+import Card from "../components/Card.astro";
+import Layout from "../layouts/Layout.astro";
+import ImageGlow from "../components/ImageGlow.astro";
+import Icon from "../components/Icon.astro";
+import { getCollection } from "astro:content";
+import { getEntry } from "astro:content";
+import { render } from "astro:content";
+import { name, openGraph } from "spectre:globals";
+
+const [
+  posts,
+  projects,
+  about,
+  workExperience,
+  quickInfo,
+  socials,
+  techStack,
+  langStack,
+] = await Promise.all([
+  getCollection("posts", (post) => post.data.draft !== true),
+  getCollection("projects"),
+  getEntry("other", "about"),
+  getCollection("workExperience"),
+  getCollection("quickInfo"),
+  getCollection("socials"),
+  getCollection("techStack"),
+  getCollection("langStack"),
+]);
+
+// biome-ignore lint/style/noNonNullAssertion: Should always be defined.
+const { Content: About } = await render(about!);
 ---
 
-<BaseLayout title={title} description={description} permalink={permalink}>
-  <div class="home-container">
-    <div class="home-copy">
-      <h1 style="margin-bottom: 0.25rem;">André Franco</h1>
-      <p style="margin-top: 0;">Fullstack developer</p>
-    </div>
+<Layout
+  title={openGraph.home.title || name}
+  description={openGraph.home.description}
+  pagefindIgnore
+>
+  <div class="layout-grid-left" slot="left">
+    <Card class="flex-col-card">
+      <ImageGlow
+        quality={100}
+        width={80}
+        height={80}
+        src={ProfilePicture}
+        alt="Louis looking out of a window"
+        loading="eager"
+      />
+      <h2>{name}</h2>
+      <ul class="overview-list">
+        {
+          quickInfo.map((info) => (
+            <li>
+              <Icon
+                type={info.data.icon.type}
+                name={info.data.icon.name as any}
+                width={24}
+                height={24}
+                class="glow-icon"
+              />
+              <span>{info.data.text}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </Card>
+    <Card>
+      <h3 class="no-mt">Socials</h3>
+      <ul class="overview-list">
+        {
+          socials.map((item) => (
+            <li>
+              <a href={item.data.link} class="socials-link" target="_blank">
+                <Icon
+                  type={item.data.icon.type}
+                  name={item.data.icon.name as any}
+                  width={24}
+                  height={24}
+                  class="glow-icon"
+                />
+                <span>{item.data.text}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </Card>
+    <Card>
+      <h3 class="no-mt">Tech Stack</h3>
+      <ul class="tech-stack">
+        {
+          techStack.map((item) => (
+            <li>
+              <a href={item.data.link} class="socials-link">
+                <span>{item.data.text}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </Card>
+    <Card>
+      <h3 class="no-mt">Language Proficiency</h3>
+      <ul class="languages-stack">
+        {
+          langStack.map((item) => (
+            <li class="language-item">
+              <span class="language-name">{item.data.text}</span>
+              <span class="language-level">{item.data.level}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </Card>
   </div>
-</BaseLayout>
-
-<style>
-  .home-container {
-    align-items: center;
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    margin: 2em 0;
-    min-height: 400px;
-  }
-
-  .home-copy {
-    flex: 1;
-    padding: 0 1em;
-  }
-
-  .home-copy h1 {
-    font-weight: 700;
-    margin-bottom: 0.5em;
-    line-height: 1.3;
-  }
-
-  .home-copy p {
-    font-size: 1.4em;
-  }
-
-  .hero-image-container {
-    margin: 0 1em;
-    text-align: center;
-  }
-
-  .hero-image-container picture {
-    display: block;
-    min-height: 250px;
-  }
-
-  .caption {
-    font-size: 0.8em;
-    font-style: italic;
-    text-align: left;
-  }
-
-  .hero-image {
-    width: 100%;
-    max-width: 550px;
-    margin-bottom: 1em;
-  }
-
-  @media (max-width: 1200px) {
-    p {
-      font-size: 1.2em;
-    }
-
-    .hero-image {
-      max-width: 400px;
-    }
-  }
-
-  @media (max-width: 800px) {
-    .home-container {
-      flex-direction: column;
-    }
-
-    .home-copy {
-      flex: 0;
-      padding-bottom: 2em;
-      text-align: center;
-    }
-  }
-</style>
+  <div class="layout-grid-right" slot="right">
+    <Card>
+      <div class="header-container">
+        <Icon
+          type="lucide"
+          name="user"
+          width={24}
+          height={24}
+          class="glow-icon"
+        />
+        <h2>About me</h2>
+      </div>
+      <div class="prose">
+        <About />
+      </div>
+    </Card>
+    <Card>
+      <div class="header-container">
+        <Icon
+          type="lucide"
+          name="rss"
+          width={24}
+          height={24}
+          class="glow-icon"
+        />
+        <h2>Latest Posts</h2>
+      </div>
+      <div class="content-container">
+        {
+          posts
+            .sort(
+              (a, b) => b.data.createdAt.getTime() - a.data.createdAt.getTime()
+            )
+            .slice(0, 2)
+            .map((post) => (
+              <a href={`/blog/${post.id}`} class="post-container">
+                <div class="post-header">
+                  <h3>{post.data.title}</h3>
+                  <span class="post-date">
+                    {post.data.createdAt.toLocaleDateString()}
+                  </span>
+                </div>
+                <span>{post.data.description}</span>
+              </a>
+            ))
+        }
+      </div>
+    </Card>
+    <!---
+    <Card>
+      <div class="header-container">
+        <Icon
+          type="lucide"
+          name="folder-git"
+          width={24}
+          height={24}
+          class="glow-icon"
+        />
+        <h2>Latest Projects</h2>
+      </div>
+      <div class="content-container">
+        {
+          projects
+            .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+            .slice(0, 2)
+            .map((project) => (
+              <a href={`/projects/${project.id}`} class="post-container">
+                <div class="post-header">
+                  <h3>{project.data.title}</h3>
+                  <span class="post-date">
+                    {project.data.date.toLocaleDateString()}
+                  </span>
+                </div>
+                <span>{project.data.description}</span>
+              </a>
+            ))
+        }
+      </div>
+    </Card>
+  -->
+    <Card>
+      <div class="header-container">
+        <Icon
+          type="lucide"
+          name="briefcase-business"
+          width={24}
+          height={24}
+          class="glow-icon"
+        />
+        <h2>Work Experience</h2>
+      </div>
+      <div class="work-experience-container">
+        {
+          workExperience.reverse().map((entry) => (
+            <div class="work-experience-entry">
+              <span class="work-experience-duration">
+                {entry.data.duration}
+              </span>
+              <h3 class="work-experience-company">{entry.data.company}</h3>
+              <span class="work-experience-role">{entry.data.title}</span>
+              <p class="work-experience-desc">{entry.data.description}</p>
+            </div>
+          ))
+        }
+      </div>
+    </Card>
+  </div>
+</Layout>

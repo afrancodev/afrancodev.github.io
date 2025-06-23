@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "text": "PHP",
+    "link": "https://www.php.net"
+  },
+  {
+    "id": 2,
+    "text": "Laravel",
+    "link": "https://laravel.com"
+  },
+  {
+    "id": 3,
+    "text": "Java",
+    "link": "https://www.java.com"
+  },
+  {
+    "id": 4,
+    "text": "Angular",
+    "link": "https://angular.dev"
+  }
+]
