@@ -13,7 +13,6 @@ import { spectreDark } from './src/ec-theme';
 const config = defineConfig({
   site: 'https://afrancodev.github.io',
   output: 'static',
-  base: '/',
   integrations: [
     expressiveCode({
       themes: [spectreDark],
