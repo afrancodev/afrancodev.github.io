@@ -1,0 +1,193 @@
+<!DOCTYPE html><html lang="en"> <head><script async src="https://www.googletagmanager.com/gtag/js?id=G-64ER6W1BF6"></script><script type="module">window.dataLayer=window.dataLayer||[];function a(){dataLayer.push(arguments)}a("js",new Date);a("config","G-64ER6W1BF6");</script><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.10.1"><title>Demystifying Pattern Matching in Java</title><meta name="description" content="The Future of Clean, Type-Safe Code"><meta name="theme-color" content="#8c5cf5"><link rel="canonical" href="https://afrancodev.github.io/"><meta name="og:title" content="Demystifying Pattern Matching in Java"><meta name="og:description" content="The Future of Clean, Type-Safe Code"><meta name="og:image" content="/_astro/pattern_matching.CH3Hs1pw.png"><meta name="og:url" content="https://afrancodev.github.io/"><meta name="og:locale" content="en"><meta name="og:type" content="article">
+			<meta property="article:published_time" content="2025-07-12T23:00:00.000Z">
+			<meta name="author" content="André Franco"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Demystifying Pattern Matching in Java"><meta name="twitter:description" content="The Future of Clean, Type-Safe Code"><meta name="twitter:image" content="/_astro/pattern_matching.CH3Hs1pw.png"><style>article h1,article h2,article h3,article h4{scroll-margin:4rem;margin-top:2rem}article{line-height:1.6;min-width:0}article hr{height:1px;border:none;background-color:#353535}p:has(img){display:flex;align-items:center;justify-content:center;margin-top:1rem;margin-bottom:1rem}p img{max-width:100%}.toc-card{min-width:0}.toc-card ol{padding:0;display:flex;flex-direction:column;gap:.5rem;margin-bottom:0;list-style-type:none;position:relative}.toc-card ol li a{color:#c7c7c7;font-size:.925rem;padding:.25rem .5rem;box-decoration-break:clone;-webkit-box-decoration-break:clone}.toc-card ol li a:hover{color:#fff;text-decoration:none}.toc-li[data-depth="3"]{margin-left:1rem}.toc-li[data-depth="4"]{margin-left:2rem}.no-mt{margin-top:0}ol li a.active{color:#fff;background:var(--primary)}.left{height:100%;position:relative}.toc-card{position:sticky;top:2rem}.article-header{position:relative;width:100%;height:fit-content;scroll-margin-top:2rem}.header{display:flex;flex-direction:column;gap:.5rem;position:absolute;bottom:1.5rem;left:1rem;max-width:calc(100% - 3rem);z-index:2}.article-h1{margin-bottom:0;font-size:2em;background:#fff;padding:.25rem .675rem;box-decoration-break:clone;-webkit-box-decoration-break:clone;position:relative;line-height:1.2;display:inline;color:#000}.article-info{display:flex;flex-direction:row;gap:.5rem;font-family:Ghost Mono,monospace;background:#fff;color:#000;box-decoration-break:clone;-webkit-box-decoration-break:clone;padding:0 .75rem;width:fit-content}@media screen and (max-width: 640px){.header{position:relative;bottom:0;left:0;width:fit-content;max-width:none;margin-top:1rem}.article-h1{display:inline;background-color:transparent;padding:0;color:#fff}.article-info{display:block;background-color:transparent;padding:0;color:#fff}}code:not(.astro-code code){background-color:#353535;padding:.125rem .25rem;font-size:.925rem}.article-image{width:100%;height:auto;z-index:1}.end-of-article{margin-top:1rem;margin-bottom:1.5rem;width:100%;height:1px;background-color:#353535;border:none}blockquote{border-left:2px solid var(--primary);padding:.75rem 1rem;margin-left:0;background-color:rgba(var(--primary-rgb),.25);width:100%}blockquote p{margin-top:0;margin-bottom:0}table{margin-top:1rem;text-align:left;border-spacing:0;border-collapse:collapse}table th{padding:.5rem 1.5rem .5rem 0;border-bottom:1px solid #353535}table tbody{margin-top:1rem}table tbody tr{border-bottom:1px solid #353535}table tbody tr td{padding:.5rem 1.5rem .5rem 0}
+.glow-image[data-astro-cid-lwpf7n2j]{position:relative}.glow-image[data-astro-cid-lwpf7n2j] img[data-astro-cid-lwpf7n2j]{position:relative;z-index:1}.glow[data-astro-cid-lwpf7n2j]{position:absolute!important;top:0;left:0;z-index:0!important;filter:blur(8px)}
+.card[data-astro-cid-dohjnao5]{width:100%;height:auto;background-color:#121212;border:1px solid #353535;padding:1.5rem;overflow:hidden}
+</style>
+<link rel="stylesheet" href="/_astro/blog.DGLDeVge.css">
+<style>.toc-card ol{padding:0;display:flex;flex-direction:column;gap:.5rem;margin-bottom:0;list-style-type:none;position:relative}.toc-card ol li a{color:#c7c7c7;font-size:.925rem;padding:.25rem .5rem;box-decoration-break:clone;-webkit-box-decoration-break:clone}.toc-card ol li a:hover{color:#fff;text-decoration:none}.toc-card ol li a.active{color:#fff;background:var(--primary)}.left{height:100%;position:relative}.toc-card{position:sticky;top:2rem}article{display:flex;flex-direction:column;gap:2rem}.comments *{border-color:#353535!important}@media screen and (max-width: 640px){article{gap:1rem}}
+</style></head> <body> <main> <nav data-astro-cid-5blmo7yk> <a class="site-title" href="/" data-astro-cid-5blmo7yk>André Franco</a> <ul data-astro-cid-5blmo7yk> <li data-astro-cid-5blmo7yk> <a href="/blog" class="active" data-astro-cid-5blmo7yk>Blog</a> </li> <li class="nav-separator" data-astro-cid-5blmo7yk>/</li> <li data-astro-cid-5blmo7yk> <a href="/projects" data-astro-cid-5blmo7yk>Projects</a> </li> <!--
+    <li class="nav-separator">/</li>
+    <li>
+      <input id="search" type="text" placeholder="Search (Ctrl+K)" />
+      <div id="search-results"></div>
+    </li>
+    --> </ul> <button class="mobile-nav-toggle" data-astro-cid-5blmo7yk> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="menu-closed" data-astro-cid-5blmo7yk="true"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16M4 18h16M4 6h16"/></svg> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="menu-open" data-astro-cid-5blmo7yk="true"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 6L6 18M6 6l12 12"/></svg> </button> </nav> <script>
+  const searchElement = document.querySelector('#search');
+  const results = document.querySelector('#search-results');
+  const navToggle = document.querySelector('.mobile-nav-toggle');
+
+  let focusIndex = -1;
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'k' && e.ctrlKey) {
+      searchElement.focus();
+    }
+
+    if (e.key === 'Escape') {
+      searchElement.blur();
+      results.classList.remove('active');
+      focusIndex = -1;
+    }
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+
+      focusIndex++;
+      const results = document.querySelectorAll('#search-results a');
+
+      if (focusIndex >= results.length) {
+        focusIndex = 0;
+      }
+
+      results[focusIndex]?.focus();
+    }
+
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+
+      focusIndex--;
+      const results = document.querySelectorAll('#search-results a');
+
+      if (focusIndex < 0) {
+        focusIndex = results.length - 1;
+      }
+
+      results[focusIndex]?.focus();
+    }
+  });
+
+  searchElement?.addEventListener('focus', () => {
+    searchElement.placeholder = '';
+    results.classList.add('active');
+  });
+
+  searchElement?.addEventListener('blur', () => {
+    searchElement.placeholder = 'Search (Ctrl+K)';
+  });
+
+  searchElement?.addEventListener('blur', () => {
+    setTimeout(() => {
+      if (!document.activeElement?.closest('#search-results')) {
+        results.classList.remove('active');
+        focusIndex = -1;
+      }
+    }, 1);
+  });
+
+  results?.addEventListener('focusout', (e) => {
+    if (!e.relatedTarget?.closest('#search-results')) {
+      results.classList.remove('active');
+      focusIndex = -1;
+    }
+  });
+
+  searchElement?.addEventListener('input', async (e) => {
+    if (e.target.dataset.loaded !== 'true') {
+      e.target.dataset.loaded = 'true';
+
+      window.pagefind = await import("/pagefind/pagefind.js");
+    }
+
+    results.innerHTML = '';
+
+    const search = await window.pagefind.search(e.target.value);
+
+    let i = 0;
+    for (const result of search.results) {
+      i++;
+
+      const data = await result.data();
+      
+      results.innerHTML += `
+        <a href="${data.url}">
+          <h3 class="no-mt">${data.meta.title}</h3>
+          <p>${data.excerpt}</p>
+        </a>
+        ${i < search.results.length ? '<hr class="separator">' : ''}
+      `;
+    }
+
+    if (search.results.length === 0 && e.target.value.length > 0) {
+      results.innerHTML = '<p style="margin-top: 0;">No results found</p>';
+    }
+
+    results.classList.add('active');
+  });
+
+  navToggle?.addEventListener('click', () => {
+    navToggle.classList.toggle('active');
+    document.querySelector('nav').classList.toggle('active');
+  });
+
+  const handleTabletChange = () => {
+    if (window.matchMedia('(max-width: 640px)').matches) {
+      searchElement.placeholder = 'Search';
+    } else {
+      searchElement.placeholder = 'Search (Ctrl+K)';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', handleTabletChange);
+  document.addEventListener('resize', handleTabletChange);
+</script>   <div class="layout-grid" data-astro-cid-cgyg4spe> <div class="left"> <div class="card toc-card" data-astro-cid-dohjnao5>  <h2 class="no-mt">Table of contents</h2> <ol> <li class="toc-li"> <a href="#_top" class="active">Demystifying Pattern Matching in Java</a> </li> <li class="toc-li" data-depth="2"> <a href="#what-is-pattern-matching">What is Pattern Matching?</a> </li><li class="toc-li" data-depth="2"> <a href="#pattern-matching-for-instanceof-java-16">Pattern Matching for instanceof (Java 16+)</a> </li><li class="toc-li" data-depth="2"> <a href="#pattern-matching-for-switch-java-21">Pattern Matching for switch (Java 21+)</a> </li><li class="toc-li" data-depth="3"> <a href="#classic-switch-with-type-checks-clunky">Classic Switch with Type Checks (Clunky)</a> </li><li class="toc-li" data-depth="3"> <a href="#pattern-matching-with-switch">Pattern Matching with switch</a> </li><li class="toc-li" data-depth="2"> <a href="#pattern-matching-with-record-classes-java-21">Pattern Matching with Record Classes (Java 21+)</a> </li><li class="toc-li" data-depth="3"> <a href="#pattern-matching-in-switch">Pattern matching in switch</a> </li><li class="toc-li" data-depth="2"> <a href="#guarded-patterns">Guarded Patterns</a> </li><li class="toc-li" data-depth="2"> <a href="#why-pattern-matching-matters">Why Pattern Matching Matters</a> </li> </ol>  </div>  </div> <article data-pagefind-body> <div class="card" data-astro-cid-dohjnao5>  <div class="article-header" id="_top" data-pagefind-ignore> <div class="glow-image" data-astro-cid-lwpf7n2j> <img src="/_astro/pattern_matching.CH3Hs1pw_XwepI.webp" alt="Demystifying Pattern Matching in Java" data-astro-cid-lwpf7n2j="true" loading="lazy" decoding="async" fetchpriority="auto" width="1408" height="768" class="article-image"> <img src="/_astro/pattern_matching.CH3Hs1pw_2QnFB.webp" alt="Demystifying Pattern Matching in Java" data-astro-cid-lwpf7n2j="true" loading="lazy" decoding="async" fetchpriority="auto" width="1408" height="768" class="article-image glow article-image"> </div>  <div class="header"> <div> <h1 class="no-mt article-h1">Demystifying Pattern Matching in Java</h1> </div> <div class="article-info"> <span>13/07/2025</span> <span>/</span> <span>12 minutes to read</span> <span>/</span> <span>Tags: Tutorial, Java</span> </div> </div> </div> <p>In this blog post, we’ll explore what pattern matching is and how it’s used.</p>
+<hr/>
+<h2 id="what-is-pattern-matching">What is Pattern Matching?</h2>
+<p><strong>Pattern Matching</strong> is a mechanism that allows you to test the structure of an object and, at the same time, extract data from it — in a safe and expressive way.</p>
+<p>In simpler terms, think of pattern matching as a <strong>smarter <code>instanceof</code></strong> that lets you match <em>and bind</em> an object to a variable <em>at the same time</em>, without awkward casting.</p>
+<hr/>
+<h2 id="pattern-matching-for-instanceof-java-16">Pattern Matching for <code>instanceof</code> (Java 16+)</h2>
+<p>Before pattern matching:</p>
+<div class="expressive-code"><link rel="stylesheet" href="/_astro/ec.23l6f.css"/><script type="module" src="/_astro/ec.8zarh.js"></script><figure class="frame"><figcaption class="header"></figcaption><pre data-language="java"><code><div class="ec-line"><div class="code"><span style="--0:#F97583">if</span><span style="--0:#E1E4E8"> (obj </span><span style="--0:#F97583">instanceof</span><span style="--0:#E1E4E8"> String) {</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#E1E4E8">    </span></span><span style="--0:#E1E4E8">String s </span><span style="--0:#F97583">=</span><span style="--0:#E1E4E8"> (String) obj;</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#E1E4E8">    </span></span><span style="--0:#E1E4E8">System.out.</span><span style="--0:#B392F0">println</span><span style="--0:#E1E4E8">(s.</span><span style="--0:#B392F0">toLowerCase</span><span style="--0:#E1E4E8">());</span></div></div><div class="ec-line"><div class="code"><span style="--0:#E1E4E8">}</span></div></div></code></pre><div class="copy"><button title="Copy to clipboard" data-copied="Copied!" data-code="if (obj instanceof String) {    String s = (String) obj;    System.out.println(s.toLowerCase());}"><div></div></button></div></figure></div>
+<p>After pattern matching:</p>
+<div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="java"><code><div class="ec-line"><div class="code"><span style="--0:#F97583">if</span><span style="--0:#E1E4E8"> (obj </span><span style="--0:#F97583">instanceof</span><span style="--0:#E1E4E8"> String s) {</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#E1E4E8">    </span></span><span style="--0:#E1E4E8">System.out.</span><span style="--0:#B392F0">println</span><span style="--0:#E1E4E8">(s.</span><span style="--0:#B392F0">toLowerCase</span><span style="--0:#E1E4E8">());</span></div></div><div class="ec-line"><div class="code"><span style="--0:#E1E4E8">}</span></div></div></code></pre><div class="copy"><button title="Copy to clipboard" data-copied="Copied!" data-code="if (obj instanceof String s) {    System.out.println(s.toLowerCase());}"><div></div></button></div></figure></div>
+<p>In this case you can see that if the <strong>obj</strong> is an instance of <strong>String</strong>, <strong>Java</strong> will automatically cast to <strong>String</strong> and assign it to variable <strong>s</strong>.</p>
+<p><strong>Cleaner, safer, and more expressive.</strong></p>
+<hr/>
+<h2 id="pattern-matching-for-switch-java-21">Pattern Matching for <code>switch</code> (Java 21+)</h2>
+<p>Java 21 brings <strong>pattern matching to switch statements</strong> — combining destructuring, type checks, and control flow in one elegant block.</p>
+<h3 id="classic-switch-with-type-checks-clunky">Classic Switch with Type Checks (Clunky)</h3>
+<div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="java"><code><div class="ec-line"><div class="code"><span style="--0:#F97583">static</span><span style="--0:#E1E4E8"> String </span><span style="--0:#B392F0">format</span><span style="--0:#E1E4E8">(Object obj) {</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#F97583">if</span><span style="--0:#E1E4E8"> (obj </span><span style="--0:#F97583">instanceof</span><span style="--0:#E1E4E8"> Integer i) {</span></div></div><div class="ec-line"><div class="code"><span class="indent">        </span><span style="--0:#F97583">return</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">&quot;int: &quot;</span><span style="--0:#E1E4E8"> </span><span style="--0:#F97583">+</span><span style="--0:#E1E4E8"> i;</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#E1E4E8">    </span></span><span style="--0:#E1E4E8">} </span><span style="--0:#F97583">else</span><span style="--0:#E1E4E8"> </span><span style="--0:#F97583">if</span><span style="--0:#E1E4E8"> (obj </span><span style="--0:#F97583">instanceof</span><span style="--0:#E1E4E8"> String s) {</span></div></div><div class="ec-line"><div class="code"><span class="indent">        </span><span style="--0:#F97583">return</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">&quot;string: &quot;</span><span style="--0:#E1E4E8"> </span><span style="--0:#F97583">+</span><span style="--0:#E1E4E8"> s.</span><span style="--0:#B392F0">toUpperCase</span><span style="--0:#E1E4E8">();</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#E1E4E8">    </span></span><span style="--0:#E1E4E8">} </span><span style="--0:#F97583">else</span><span style="--0:#E1E4E8"> {</span></div></div><div class="ec-line"><div class="code"><span class="indent">        </span><span style="--0:#F97583">return</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">&quot;unknown&quot;</span><span style="--0:#E1E4E8">;</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#E1E4E8">    </span></span><span style="--0:#E1E4E8">}</span></div></div><div class="ec-line"><div class="code"><span style="--0:#E1E4E8">}</span></div></div></code></pre><div class="copy"><button title="Copy to clipboard" data-copied="Copied!" data-code="static String format(Object obj) {    if (obj instanceof Integer i) {        return &#34;int: &#34; + i;    } else if (obj instanceof String s) {        return &#34;string: &#34; + s.toUpperCase();    } else {        return &#34;unknown&#34;;    }}"><div></div></button></div></figure></div>
+<h3 id="pattern-matching-with-switch">Pattern Matching with <code>switch</code></h3>
+<div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="java"><code><div class="ec-line"><div class="code"><span style="--0:#F97583">static</span><span style="--0:#E1E4E8"> String </span><span style="--0:#B392F0">format</span><span style="--0:#E1E4E8">(Object obj) {</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#F97583">return</span><span style="--0:#E1E4E8"> </span><span style="--0:#F97583">switch</span><span style="--0:#E1E4E8"> (obj) {</span></div></div><div class="ec-line"><div class="code"><span class="indent">        </span><span style="--0:#F97583">case</span><span style="--0:#E1E4E8"> Integer i </span><span style="--0:#F97583">-&gt;</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">&quot;int: &quot;</span><span style="--0:#E1E4E8"> </span><span style="--0:#F97583">+</span><span style="--0:#E1E4E8"> i;</span></div></div><div class="ec-line"><div class="code"><span class="indent">        </span><span style="--0:#F97583">case</span><span style="--0:#E1E4E8"> String s </span><span style="--0:#F97583">-&gt;</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">&quot;string: &quot;</span><span style="--0:#E1E4E8"> </span><span style="--0:#F97583">+</span><span style="--0:#E1E4E8"> s.</span><span style="--0:#B392F0">toUpperCase</span><span style="--0:#E1E4E8">();</span></div></div><div class="ec-line"><div class="code"><span class="indent">        </span><span style="--0:#F97583">default</span><span style="--0:#E1E4E8"> </span><span style="--0:#F97583">-&gt;</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">&quot;unknown&quot;</span><span style="--0:#E1E4E8">;</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#E1E4E8">    </span></span><span style="--0:#E1E4E8">};</span></div></div><div class="ec-line"><div class="code"><span style="--0:#E1E4E8">}</span></div></div></code></pre><div class="copy"><button title="Copy to clipboard" data-copied="Copied!" data-code="static String format(Object obj) {    return switch (obj) {        case Integer i -> &#34;int: &#34; + i;        case String s -> &#34;string: &#34; + s.toUpperCase();        default -> &#34;unknown&#34;;    };}"><div></div></button></div></figure></div>
+<p>Note that in this case, if the argument <strong>obj</strong> passed to the method is not of type Integer, no exception will be thrown. This is amazing because you don’t need to worry about <strong>Class Cast Exceptions</strong>.</p>
+<p>So for the example. the code below:</p>
+<div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="java"><code><div class="ec-line"><div class="code"><span style="--0:#E1E4E8">System.out.</span><span style="--0:#B392F0">println</span><span style="--0:#E1E4E8">(</span><span style="--0:#B392F0">format</span><span style="--0:#E1E4E8">(</span><span style="--0:#79B8FF">10</span><span style="--0:#E1E4E8">));</span></div></div><div class="ec-line"><div class="code"><span style="--0:#E1E4E8">System.out.</span><span style="--0:#B392F0">println</span><span style="--0:#E1E4E8">(</span><span style="--0:#B392F0">format</span><span style="--0:#E1E4E8">(</span><span style="--0:#9ECBFF">&quot;afrancodev&quot;</span><span style="--0:#E1E4E8">));</span></div></div><div class="ec-line"><div class="code"><span style="--0:#E1E4E8">System.out.</span><span style="--0:#B392F0">println</span><span style="--0:#E1E4E8">(</span><span style="--0:#B392F0">format</span><span style="--0:#E1E4E8">(</span><span style="--0:#79B8FF">10.0f</span><span style="--0:#E1E4E8">));</span></div></div></code></pre><div class="copy"><button title="Copy to clipboard" data-copied="Copied!" data-code="System.out.println(format(10));System.out.println(format(&#34;afrancodev&#34;));System.out.println(format(10.0f));"><div></div></button></div></figure></div>
+<p>will output:</p>
+<div class="expressive-code"><figure class="frame is-terminal"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#B392F0">int:</span><span style="--0:#E1E4E8"> </span><span style="--0:#79B8FF">10</span></div></div><div class="ec-line"><div class="code"><span style="--0:#B392F0">string:</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">AFRANCODEV</span></div></div><div class="ec-line"><div class="code"><span style="--0:#B392F0">unknown</span></div></div></code></pre><div class="copy"><button title="Copy to clipboard" data-copied="Copied!" data-code="int: 10string: AFRANCODEVunknown"><div></div></button></div></figure></div>
+<hr/>
+<h2 id="pattern-matching-with-record-classes-java-21">Pattern Matching with Record Classes (Java 21+)</h2>
+<p>One of the <strong>killer features</strong> is destructuring record components during pattern matching.</p>
+<h3 id="pattern-matching-in-switch">Pattern matching in switch</h3>
+<p>Given a record:</p>
+<div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="java"><code><div class="ec-line"><div class="code"><span style="--0:#F97583">record</span><span style="--0:#E1E4E8"> </span><span style="--0:#B392F0">Point</span><span style="--0:#E1E4E8">(</span><span style="--0:#F97583">int</span><span style="--0:#E1E4E8"> x, </span><span style="--0:#F97583">int</span><span style="--0:#E1E4E8"> y) {}</span></div></div></code></pre><div class="copy"><button title="Copy to clipboard" data-copied="Copied!" data-code="record Point(int x, int y) {}"><div></div></button></div></figure></div>
+<p>You can desconstruct the object in a switch expression:</p>
+<div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="java"><code><div class="ec-line"><div class="code"><span style="--0:#F97583">static</span><span style="--0:#E1E4E8"> String </span><span style="--0:#B392F0">describe</span><span style="--0:#E1E4E8">(Object obj) {</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#F97583">return</span><span style="--0:#E1E4E8"> </span><span style="--0:#F97583">switch</span><span style="--0:#E1E4E8"> (obj) {</span></div></div><div class="ec-line"><div class="code"><span class="indent">        </span><span style="--0:#F97583">case</span><span style="--0:#E1E4E8"> </span><span style="--0:#B392F0">Point</span><span style="--0:#E1E4E8">(</span><span style="--0:#F97583">int</span><span style="--0:#E1E4E8"> x, </span><span style="--0:#F97583">int</span><span style="--0:#E1E4E8"> y) </span><span style="--0:#F97583">-&gt;</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">&quot;Point at (&quot;</span><span style="--0:#E1E4E8"> </span><span style="--0:#F97583">+</span><span style="--0:#E1E4E8"> x </span><span style="--0:#F97583">+</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">&quot;, &quot;</span><span style="--0:#E1E4E8"> </span><span style="--0:#F97583">+</span><span style="--0:#E1E4E8"> y </span><span style="--0:#F97583">+</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">&quot;)&quot;</span><span style="--0:#E1E4E8">;</span></div></div><div class="ec-line"><div class="code"><span class="indent">        </span><span style="--0:#F97583">default</span><span style="--0:#E1E4E8"> </span><span style="--0:#F97583">-&gt;</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">&quot;Unknown object&quot;</span><span style="--0:#E1E4E8">;</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#E1E4E8">    </span></span><span style="--0:#E1E4E8">};</span></div></div><div class="ec-line"><div class="code"><span style="--0:#E1E4E8">}</span></div></div></code></pre><div class="copy"><button title="Copy to clipboard" data-copied="Copied!" data-code="static String describe(Object obj) {    return switch (obj) {        case Point(int x, int y) -> &#34;Point at (&#34; + x + &#34;, &#34; + y + &#34;)&#34;;        default -> &#34;Unknown object&#34;;    };}"><div></div></button></div></figure></div>
+<p>For example, the code below:</p>
+<div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="java"><code><div class="ec-line"><div class="code"><span style="--0:#E1E4E8">System.out.</span><span style="--0:#B392F0">println</span><span style="--0:#E1E4E8">(</span><span style="--0:#B392F0">describe</span><span style="--0:#E1E4E8">(</span><span style="--0:#F97583">new</span><span style="--0:#E1E4E8"> </span><span style="--0:#B392F0">Point</span><span style="--0:#E1E4E8">(</span><span style="--0:#79B8FF">10</span><span style="--0:#E1E4E8">, </span><span style="--0:#79B8FF">10</span><span style="--0:#E1E4E8">)));</span></div></div><div class="ec-line"><div class="code"><span style="--0:#E1E4E8">System.out.</span><span style="--0:#B392F0">println</span><span style="--0:#E1E4E8">(</span><span style="--0:#B392F0">describe</span><span style="--0:#E1E4E8">(</span><span style="--0:#F97583">new</span><span style="--0:#E1E4E8"> </span><span style="--0:#B392F0">Point</span><span style="--0:#E1E4E8">(</span><span style="--0:#79B8FF">10</span><span style="--0:#E1E4E8">, </span><span style="--0:#79B8FF">20</span><span style="--0:#E1E4E8">)));</span></div></div></code></pre><div class="copy"><button title="Copy to clipboard" data-copied="Copied!" data-code="System.out.println(describe(new Point(10, 10)));System.out.println(describe(new Point(10, 20)));"><div></div></button></div></figure></div>
+<p>will output:</p>
+<div class="expressive-code"><figure class="frame is-terminal"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#B392F0">Point</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">at</span><span style="--0:#E1E4E8"> (10, </span><span style="--0:#79B8FF">10</span><span style="--0:#E1E4E8">)</span></div></div><div class="ec-line"><div class="code"><span style="--0:#B392F0">Point</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">at</span><span style="--0:#E1E4E8"> (10, </span><span style="--0:#79B8FF">20</span><span style="--0:#E1E4E8">)</span></div></div></code></pre><div class="copy"><button title="Copy to clipboard" data-copied="Copied!" data-code="Point at (10, 10)Point at (10, 20)"><div></div></button></div></figure></div>
+<p>With just one line, you’ve matched the type <em>and</em> extracted its fields.  Incredible!</p>
+<hr/>
+<h2 id="guarded-patterns">Guarded Patterns</h2>
+<p>What if you want to match <em>with a condition</em>? That’s where <strong>guarded patterns</strong> shine:</p>
+<div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="java"><code><div class="ec-line"><div class="code"><span style="--0:#F97583">static</span><span style="--0:#E1E4E8"> String </span><span style="--0:#B392F0">describe</span><span style="--0:#E1E4E8">(Point p) {</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#F97583">return</span><span style="--0:#E1E4E8"> </span><span style="--0:#F97583">switch</span><span style="--0:#E1E4E8"> (p) {</span></div></div><div class="ec-line"><div class="code"><span class="indent">        </span><span style="--0:#F97583">case</span><span style="--0:#E1E4E8"> </span><span style="--0:#B392F0">Point</span><span style="--0:#E1E4E8">(</span><span style="--0:#F97583">int</span><span style="--0:#E1E4E8"> x, </span><span style="--0:#F97583">int</span><span style="--0:#E1E4E8"> y) when x </span><span style="--0:#F97583">==</span><span style="--0:#E1E4E8"> y </span><span style="--0:#F97583">-&gt;</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">&quot;Diagonal point&quot;</span><span style="--0:#E1E4E8">;</span></div></div><div class="ec-line"><div class="code"><span class="indent">        </span><span style="--0:#F97583">case</span><span style="--0:#E1E4E8"> </span><span style="--0:#B392F0">Point</span><span style="--0:#E1E4E8">(</span><span style="--0:#F97583">int</span><span style="--0:#E1E4E8"> x, </span><span style="--0:#F97583">int</span><span style="--0:#E1E4E8"> y) </span><span style="--0:#F97583">-&gt;</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">&quot;Regular point at (&quot;</span><span style="--0:#E1E4E8"> </span><span style="--0:#F97583">+</span><span style="--0:#E1E4E8"> x </span><span style="--0:#F97583">+</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">&quot;,&quot;</span><span style="--0:#E1E4E8"> </span><span style="--0:#F97583">+</span><span style="--0:#E1E4E8"> y </span><span style="--0:#F97583">+</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">&quot;)&quot;</span><span style="--0:#E1E4E8">;</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#E1E4E8">    </span></span><span style="--0:#E1E4E8">};</span></div></div><div class="ec-line"><div class="code"><span style="--0:#E1E4E8">}</span></div></div></code></pre><div class="copy"><button title="Copy to clipboard" data-copied="Copied!" data-code="static String describe(Point p) {    return switch (p) {        case Point(int x, int y) when x == y -> &#34;Diagonal point&#34;;        case Point(int x, int y) -> &#34;Regular point at (&#34; + x + &#34;,&#34; + y + &#34;)&#34;;    };}"><div></div></button></div></figure></div>
+<p>Here, we use a guard <code>when (x == y)</code> to refine the match.</p>
+<p>For example, the code below:</p>
+<div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="java"><code><div class="ec-line"><div class="code"><span style="--0:#E1E4E8">System.out.</span><span style="--0:#B392F0">println</span><span style="--0:#E1E4E8">(</span><span style="--0:#B392F0">describe</span><span style="--0:#E1E4E8">(</span><span style="--0:#F97583">new</span><span style="--0:#E1E4E8"> </span><span style="--0:#B392F0">Point</span><span style="--0:#E1E4E8">(</span><span style="--0:#79B8FF">10</span><span style="--0:#E1E4E8">, </span><span style="--0:#79B8FF">10</span><span style="--0:#E1E4E8">)));</span></div></div><div class="ec-line"><div class="code"><span style="--0:#E1E4E8">System.out.</span><span style="--0:#B392F0">println</span><span style="--0:#E1E4E8">(</span><span style="--0:#B392F0">describe</span><span style="--0:#E1E4E8">(</span><span style="--0:#F97583">new</span><span style="--0:#E1E4E8"> </span><span style="--0:#B392F0">Point</span><span style="--0:#E1E4E8">(</span><span style="--0:#79B8FF">10</span><span style="--0:#E1E4E8">, </span><span style="--0:#79B8FF">20</span><span style="--0:#E1E4E8">)));</span></div></div></code></pre><div class="copy"><button title="Copy to clipboard" data-copied="Copied!" data-code="System.out.println(describe(new Point(10, 10)));System.out.println(describe(new Point(10, 20)));"><div></div></button></div></figure></div>
+<p>will output:</p>
+<div class="expressive-code"><figure class="frame is-terminal"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#B392F0">Diagonal</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">point</span></div></div><div class="ec-line"><div class="code"><span style="--0:#B392F0">Regular</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">point</span><span style="--0:#E1E4E8"> </span><span style="--0:#9ECBFF">at</span><span style="--0:#E1E4E8"> (10,20)</span></div></div></code></pre><div class="copy"><button title="Copy to clipboard" data-copied="Copied!" data-code="Diagonal pointRegular point at (10,20)"><div></div></button></div></figure></div>
+<hr/>
+<h2 id="why-pattern-matching-matters">Why Pattern Matching Matters</h2>
+<p>Java has always prioritized <strong>readability and type safety</strong>, but its verbosity has often been a pain point. Pattern matching addresses this by:</p>
+<ul>
+<li>Reducing boilerplate</li>
+<li>Improving control flow readability</li>
+<li>Eliminating unsafe casting</li>
+<li>Enabling future functional-style constructs</li>
+</ul>
+<p>Combine this with records, sealed types, and new switch expressions, and you’ve got a Java that’s <strong>modern, expressive, and still safe</strong>.</p>
+<hr/>
+<p>Pattern matching in Java is one of the most exciting steps toward <strong>declarative, clean, and powerful programming</strong>. As Java evolves, expect even more robust features like <strong>array matching, deep destructuring</strong>, and <strong>pattern unions</strong>.</p>
+<p>So if you haven’t explored Java 21 yet — now is the time to match with the future.</p>
+<p><strong><em>Happy Coding!</em></strong></p> <hr class="end-of-article"> <a href="/blog" class="block-link" data-pagefind-ignore>← Back to blog</a>  </div>   </article> </div>   </main> <canvas id="bg-canvas" data-astro-cid-y3soregm></canvas> <canvas id="overlay-canvas" data-astro-cid-y3soregm></canvas> <script type="module" src="/_astro/Background.astro_astro_type_script_index_0_lang.D6Pa6l4d.js"></script>  </body></html> <script type="module">const s=document.querySelectorAll(".toc-li a"),c=document.querySelectorAll("#_top, article h1, article h2, article h3, article h4"),n=new Map;for(const t of s){const e=t.href.split("#")[1],o=document.getElementById(e);o&&n.set(o,t)}function l(t){const e=t.getBoundingClientRect(),o=Math.max(document.documentElement.clientHeight,window.innerHeight);return!(e.bottom<0||e.top-o>=0)}const r=new IntersectionObserver(()=>{let t=null;for(const e of c){const o=l(e),i=n.get(e);if(o){i&&i.classList.add("active"),t||(t=e);break}}if(t){for(const e of n.keys())if(e!==t){const o=n.get(e);o&&o.classList.remove("active")}}},{threshold:0,root:null,rootMargin:"0px"});for(const t of c)r.observe(t);</script> 
