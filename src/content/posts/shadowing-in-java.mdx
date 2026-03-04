@@ -1,0 +1,214 @@
+---
+title: "Shadowing in Java"
+description: "How Shadowing works and the mistakes developers make while using it."
+image: "../assets/posts/shadowing-in-java.png"
+createdAt: 04-03-2026
+draft: false
+tags:
+  - Java
+  - Tutorial
+---
+
+## What is shadowing?
+
+A **shadowed** variable is any identifier that is declared in an inner scope-such as a method parameter, 
+a local variable, or a field of an inner class-with exactly the same name as a variable that already 
+exists in an outer scope. While the inner declaration is in effect, the outer variable can no longer 
+be accessed by its simple name.
+
+
+Shadowing isn't inherently wrong! When used intentionally it can make the code more concise and readable.
+However when it happens by accident it can hide bugs, make the logic harder to follow and increase maintenance cost.
+
+
+In this article I will show you what are the most common places where shadowing happens and explain how to use it.
+
+## Parameter shadowing - Constructor & Setter
+
+````java
+public class Person {
+  private String name; // instance field
+  private int age; // instance field
+
+  // Parameters have exactly the same names as the fields
+  public Person(String name, int age) {
+    this.name = name;
+    this.age = age;
+  }
+
+  public void setAge(int age) {
+    if (age < 0) {
+      throw new IllegalArgumentException("balance can't be negative");
+    }
+    this.age = age; // explicit field assignment
+  }
+}
+````
+
+Here, both the constructor of ``Person``and the setter of ``age`` deliberately shadow their corresponding instance field.
+
+By qualifying the field with ``this.`` we refer to the instance variable, even though a parameter with
+the same name is scoped.
+This makes the code more readable and eliminates the need for weird parameter names like ``nameParam`` or ``ageValue``;
+
+
+## Method-local variable shadowing a field
+
+````java
+public class Counter {
+  private int count = 0; // instance field
+
+  public void increment(int delta) {
+    int count = this.count + delta;
+
+    System.out.println("\ttemporary total = " + count);
+
+    this.count = count;
+  }
+
+  public int getCount(){
+    return count;
+  }
+
+  public static void main(String[] args) {
+    Counter c = new Counter();
+
+    System.out.println("initial count = " + c.getCount());
+    
+    c.increment(5);
+    System.out.println("After first increment = " + c.getCount());
+
+    c.increment(3);
+    System.out.println("After second increment = " + c.getCount());  
+  }
+}
+````
+
+Output:
+
+````
+initial count = 0
+    temporary total = 5
+after first increment = 5
+    temporary total = 8
+after second increment = 8
+````
+
+Here shadowing occurs when the line ````int count = this.count + delta;```` declares a new local variable count.
+From that point until the method ends, the simple name ````count```` refers to the local variable, not the instance field 
+
+Accessing the hidden field we use ````this.count```` to read the original field value before we create the local variable.
+Without the ````this.```` qualifier the right hand side would have referred to the still uninitialized local variable, producing a compilation error.
+
+After we copy the temporary result back into the instance field with ````this.count = count;````. If we omitted that assignment, the instance field would stay unchanged, 
+showing that shadowing doesn't automatically affect the hidden variable.
+
+
+## Inner-class variable shadowing an outer-class variable
+
+````java
+public class Outer {
+  private String label = "outer";
+
+  public void demonstrate() {
+    String label = "method-local";
+    System.out.println("Inside method: " + label);
+
+    // Inner class
+    class Inner {
+      void show() {
+        String label = "inner-class-local";
+        System.out.println("Inner sees outer field : " + Outer.this.label);
+
+        System.out.println("Inner Class field : " + label);
+      }
+    }
+
+    new Inner().show();
+  }
+
+  public static void main(String[] args) {
+    new Outer().demonstrate();
+  }
+}
+````
+
+Output:
+
+````
+Inside method: method-local
+Inner sees outer field : outer 
+Inner Class field : inner-class-local
+````
+
+
+The innermost declaration always wins when you refer to the identifier by its simple name. To reach a hidden variable that is not the innermost 
+one, you must qualify it:
+- ``this.label``: the outer instance field of the current class.
+- ``Outer.this.label``: the outer instance field from within an inner class.
+
+
+
+## Super-class field shadowed by a sub-class field
+
+````java
+public class Vehicle {
+  protected double basePrice = 20_000.0;
+
+  public double getBasePrice() {
+    return basePrice;
+  }
+}
+
+public class ElectricVehicle extends Vehicle {
+  protected double basePrice = 35_000.0;
+
+  public double getEVCoveredPrice() {
+    return basePrice;
+  }
+
+  public double getParentBasePrice() {
+    return super.basePrice;
+  }
+}
+
+public class Demo {
+  public static void main(String[] args) {
+    ElectricVehicle ev = new ElectricVehicle();
+
+    System.out.println("EV price (shadowed)    : " + ev.getEVCoveredPrice());
+    System.out.println("Vehicle price (super)  : " + ev.getParentBasePrice());
+    System.out.println("Via Vehicle ref        : " + ((Vehicle) ev).getBasePrice());
+  }
+}
+````
+
+Output:
+
+````
+EV price (shadowed)    : 35000.0
+Vehicle price (super)  : 20000.0
+Via Vehicle ref        : 20000.0
+````
+
+Explanation of what is happening:
+
+- ``Vehicle`` defines a protected field ``basePrice = 20_000.0``.
+- ``ElectricVehicle`` declares another field with the same name (``basePrice = 35_000.0``).
+  - This shadows the superclass field - any unqualified use of ``basePrice`` inside ``ElectricVehicle```refers to 
+the sub-class version.
+- To reach the hidden superclass value you must qualify it with ``super.basePrice``.
+- When the object is up-cast to ``Vehicle`` and ``getBasePrice()`` is called, the method defined in
+``Vehicle`` runs and returns ``Vehicle.basePrice``.
+
+
+## TL;DR 
+
+Shadowing can be a handy tool for readability and for localizing temporary state (method-local or inner-class variables).
+
+Use it deliberately, always qualify the hidden member (``this.``, ``super.`` or ``Outer.this``), and enable IDE warnings so 
+you can't forget it.
+When you follow those simple rules, shadowing becomes an advantage rather than a source of bugs.
+
+
+_**Happy coding!**_

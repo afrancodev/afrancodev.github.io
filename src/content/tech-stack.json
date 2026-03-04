@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "text": "PHP",
+    "link": "https://www.php.net"
+  },
+  {
+    "id": 2,
+    "text": "Laravel",
+    "link": "https://laravel.com"
+  },
+  {
+    "id": 3,
+    "text": "Java",
+    "link": "https://www.java.com"
+  },
+  {
+    "id": 4,
+    "text": "Angular",
+    "link": "https://angular.dev"
+  },
+  {
+    "id": 5,
+    "text": "Python",
+    "link": "https://www.python.org"
+  },
+  {
+    "id": 6,
+    "text": "Javascript",
+    "link": "https://en.wikipedia.org/wiki/JavaScript"
+  }
+]

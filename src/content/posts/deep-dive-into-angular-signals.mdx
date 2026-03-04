@@ -1,0 +1,95 @@
+---
+title: "Goodbye RxJS? A Deep Dive into Angular Signals"
+description: "RxJS has been at the core of Angular’s reactivity model for years. But with the introduction of Signals in Angular 16+, that might be about to change. Is it time to say goodbye to RxJS? Let's dive deep and find out."
+image: "../assets/posts/signals-vs-rxjs.png"
+createdAt: 06-25-2025
+draft: false
+tags:
+  - Tutorial
+  - Angular
+---
+
+## What Are Angular Signals?
+Angular Signals are a new reactive primitive introduced to simplify how we manage reactive state.
+
+Example:
+
+```typescript
+import { signal } from '@angular/core';
+
+const counter = signal(0);
+
+// Read signal
+console.log(counter()); // 0
+
+// Update signal
+counter.set(1);
+```
+
+Signals are:
+
+- Synchronous
+- Fine-grained
+- Dependency-tracked
+- Built into the Angular change detection system (no async pipe needed)
+
+## Signals vs RxJS: The Key Differences
+
+|Feature|Signals|RxJS|
+|--|--|--|
+|Reactivity Model|Pull-based|Push-based|
+|Change Detection Integration|Native|Needs async pipe or manual trigger|
+|Asynchronous streams|No|Yes|
+|Composition tools|`computed`, `effect`|`map`, `merge`, `switchMap`, etc..|
+|Dependency tracking|Automatic|Manual via subscriptions|
+|Learning curve|Easier for state|Steeper for streams|
+
+
+## Real-World Example: Counter with RxJS vs Signals
+
+_**RxJS Version**_
+```typescript
+import { BehaviorSubject } from 'rxjs';
+
+export class CounterRxComponent {
+  private count$ = new BehaviorSubject(0);
+
+  increment() {
+    this.count$.next(this.count$.value + 1);
+  }
+}
+```
+_**Signals Version**_
+
+```typescript
+import { signal } from '@angular/core';
+
+export class CounterSignalComponent {
+  count = signal(0);
+
+  increment() {
+    this.count.set(this.count() + 1);
+  }
+}
+```
+_Same feature, less boilerplate, easier tracking._
+
+## When to use Signals vs RxJS
+
+Use signals when
+- You’re managing UI state
+- You want tight integration with Angular's change detection
+- You need simplicity and performance
+
+Use RxJS when
+- You deal with streams (HTTP, websockets)
+- You need advanced operators
+- You're already in a RxJS-heavy codebase
+
+### Conclusion
+RxJS isn't going anywhere — but Signals are here to change how we think about reactivity in Angular.
+
+If you can find an example project with both RxJS and signals on my [github](https://github.com/afrancodev/Angular-signals-vs-RxJS).
+
+
+_**Happy Coding!**_

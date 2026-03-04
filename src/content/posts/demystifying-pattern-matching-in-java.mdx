@@ -1,0 +1,191 @@
+---
+title: "Demystifying Pattern Matching in Java"
+description: "The Future of Clean, Type-Safe Code"
+image: "../assets/posts/pattern_matching.png"
+createdAt: 07-13-2025
+draft: false
+tags:
+  - Tutorial
+  - Java
+---
+
+In this blog post, we’ll explore what pattern matching is and how it’s used.
+
+---
+
+## What is Pattern Matching?
+
+**Pattern Matching** is a mechanism that allows you to test the structure of an object and, at the same time, extract data from it — in a safe and expressive way.
+
+In simpler terms, think of pattern matching as a **smarter `instanceof`** that lets you match *and bind* an object to a variable *at the same time*, without awkward casting.
+
+---
+
+## Pattern Matching for `instanceof` (Java 16+)
+
+Before pattern matching:
+
+```java
+if (obj instanceof String) {
+    String s = (String) obj;
+    System.out.println(s.toLowerCase());
+}
+```
+
+After pattern matching:
+
+```java
+if (obj instanceof String s) {
+    System.out.println(s.toLowerCase());
+}
+```
+
+In this case you can see that if the **obj** is an instance of **String**, **Java** will automatically cast to **String** and assign it to variable **s**.
+
+**Cleaner, safer, and more expressive.**
+
+---
+
+## Pattern Matching for `switch` (Java 21+)
+
+Java 21 brings **pattern matching to switch statements** — combining destructuring, type checks, and control flow in one elegant block.
+
+### Classic Switch with Type Checks (Clunky)
+
+```java
+static String format(Object obj) {
+    if (obj instanceof Integer i) {
+        return "int: " + i;
+    } else if (obj instanceof String s) {
+        return "string: " + s.toUpperCase();
+    } else {
+        return "unknown";
+    }
+}
+```
+
+### Pattern Matching with `switch`
+
+```java
+static String format(Object obj) {
+    return switch (obj) {
+        case Integer i -> "int: " + i;
+        case String s -> "string: " + s.toUpperCase();
+        default -> "unknown";
+    };
+}
+```
+
+
+Note that in this case, if the argument **obj** passed to the method is not of type Integer, no exception will be thrown. This is amazing because you don't need to worry about **Class Cast Exceptions**.
+
+So for the example. the code below:
+
+```java
+System.out.println(format(10));
+System.out.println(format("afrancodev"));
+System.out.println(format(10.0f));
+```
+
+will output:
+
+```bash
+int: 10
+string: AFRANCODEV
+unknown
+```
+
+---
+
+## Pattern Matching with Record Classes (Java 21+)
+
+One of the **killer features** is destructuring record components during pattern matching.
+
+### Pattern matching in switch
+
+Given a record:
+
+```java
+record Point(int x, int y) {}
+```
+
+You can desconstruct the object in a switch expression:
+
+```java
+static String describe(Object obj) {
+    return switch (obj) {
+        case Point(int x, int y) -> "Point at (" + x + ", " + y + ")";
+        default -> "Unknown object";
+    };
+}
+```
+
+For example, the code below:
+
+```java
+System.out.println(describe(new Point(10, 10)));
+System.out.println(describe(new Point(10, 20)));
+```
+will output:
+
+```bash
+Point at (10, 10)
+Point at (10, 20)
+```
+
+
+With just one line, you’ve matched the type *and* extracted its fields.  Incredible!
+
+---
+
+## Guarded Patterns
+
+What if you want to match *with a condition*? That's where **guarded patterns** shine:
+
+```java
+static String describe(Point p) {
+    return switch (p) {
+        case Point(int x, int y) when x == y -> "Diagonal point";
+        case Point(int x, int y) -> "Regular point at (" + x + "," + y + ")";
+    };
+}
+```
+
+Here, we use a guard `when (x == y)` to refine the match.
+
+For example, the code below:
+
+
+```java
+System.out.println(describe(new Point(10, 10)));
+System.out.println(describe(new Point(10, 20)));
+```
+will output:
+
+```bash
+Diagonal point
+Regular point at (10,20)
+```
+
+---
+
+## Why Pattern Matching Matters
+
+Java has always prioritized **readability and type safety**, but its verbosity has often been a pain point. Pattern matching addresses this by:
+
+- Reducing boilerplate
+- Improving control flow readability
+- Eliminating unsafe casting
+- Enabling future functional-style constructs
+
+Combine this with records, sealed types, and new switch expressions, and you’ve got a Java that’s **modern, expressive, and still safe**.
+
+---
+
+
+Pattern matching in Java is one of the most exciting steps toward **declarative, clean, and powerful programming**. As Java evolves, expect even more robust features like **array matching, deep destructuring**, and **pattern unions**.
+
+So if you haven’t explored Java 21 yet — now is the time to match with the future. 
+
+
+__*Happy Coding!*__

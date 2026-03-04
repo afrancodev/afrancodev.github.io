@@ -1,0 +1,82 @@
+---
+title: Java Spring Boot + Angular Starter Application
+date: 06-29-2025
+description: Starter application with java spring boot and angular
+image: ../assets/projects/java_spring_angular_starter.png
+info:
+  - text: GitHub
+    link: https://github.com/afrancodev/java-spring-angular-starter-application
+    icon:
+      type: lucide
+      name: github
+---
+
+Building modern web applications often means juggling multiple technologies — frontend frameworks, backend APIs, databases, and deployment configurations. While powerful, setting up a full-stack project from scratch can be tedious and error-prone, especially when you just want to focus on writing business logic.
+
+To help developers cut through the initial setup overhead, I created a simple yet robust **Java Spring Boot + Angular starter template**. This minimal project gives you a ready-to-go foundation combining two of the most popular technologies in enterprise web development:
+
+- **Java Spring Boot**: A battle-tested framework for building backend REST APIs, complete with in-memory H2 database support to keep things simple for prototyping.
+- **Angular (Standalone Components)**: A modern frontend framework using standalone components, designed for flexibility and better modularity.
+
+---
+
+## What’s Inside the Starter Template?
+
+The project is organized into two main folders:
+
+- **backend/** — A Spring Boot backend with a simple model, service, and REST controller exposing CRUD operations. It uses an embedded H2 database, so no complex DB setup is required.
+- **frontend/** — An Angular application with a standalone component that fetches and displays data from the backend API.
+
+This clear separation allows you to develop, test, and deploy the frontend and backend independently — or combine them into a single deployment pipeline as needed.
+
+---
+
+## Why Use This Starter?
+
+- **Save Time**: No need to configure Spring Boot or Angular from zero.
+- **Modern Practices**: The Angular app uses standalone components and `provideHttpClient()`, reflecting the latest Angular best practices.
+- **Lightweight and Extendable**: The minimal code base lets you easily add features like authentication, more complex data models, or routing.
+- **Ready for Prototyping**: With H2 database integration, you get a working backend without needing an external database server.
+
+---
+
+## How to Get Started
+
+1. Clone the repo or download the project.
+2. Run the backend with Maven:  
+   ```
+   cd backend
+   mvn spring-boot:run
+   ```
+3. Run the frontend with npm:  
+   ```
+   cd frontend
+   npm install
+   npm start
+   ```
+4. Visit `http://localhost:4200` in your browser to see the frontend fetching data from the backend API.
+
+---
+
+## Who Is This For?
+
+- Developers who want a reliable, minimal full-stack Java + Angular template.
+- Teams starting new projects who want a consistent boilerplate.
+- Anyone learning how to connect a Spring Boot backend with an Angular frontend.
+
+---
+
+## What’s Next?
+
+This starter can evolve into a production-ready project by adding features such as:
+
+- User authentication with JWT tokens.
+- Advanced routing and lazy loading on the frontend.
+- Persistent database support (PostgreSQL, MySQL).
+- CI/CD pipelines and Docker containerization.
+
+---
+
+If you want a jumpstart for your next full-stack app without getting stuck in setup headaches, check out this starter project and start building today!
+
+_**Happy Coding!**_
