@@ -9,6 +9,7 @@ import { spectreDark } from "./src/ec-theme";
 
 export default defineConfig({
   site: "https://afrancodev.github.io",
+  output: "static",
   // base: '/your-repo-name', // ADD THIS if your URL has a subfolder/repo name
   integrations: [
     expressiveCode({ themes: [spectreDark] }),
