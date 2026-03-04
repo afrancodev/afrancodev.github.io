@@ -9,11 +9,11 @@
   },
   {
     "id": 2,
-    "icon": {
-      "type": "lucide",
-      "name": "cake"
+    "icon": { 
+      "type": "lucide", 
+      "name": "cake" 
     },
-    "text": "28 years old"
+    "text": "1996-12-11" 
   },
   {
     "id": 3,

@@ -54,18 +54,36 @@ const { Content: About } = await render(about!);
       <h2>{name}</h2>
       <ul class="overview-list">
         {
-          quickInfo.map((info) => (
-            <li>
-              <Icon
-                type={info.data.icon.type}
-                name={info.data.icon.name as any}
-                width={24}
-                height={24}
-                class="glow-icon"
-              />
-              <span>{info.data.text}</span>
-            </li>
-          ))
+          quickInfo.map((info) => {
+            // 1. Logic to calculate age if the icon is 'cake'
+            let displayText = info.data.text;
+            
+            if (info.data.icon.name === 'cake') {
+              const birthDate = new Date(info.data.text);
+              const today = new Date();
+              let age = today.getFullYear() - birthDate.getFullYear();
+              const m = today.getMonth() - birthDate.getMonth();
+              
+              if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+              }
+              displayText = `${age} years old`;
+            }
+
+            // 2. Return the JSX
+            return (
+              <li>
+                <Icon
+                  type={info.data.icon.type}
+                  name={info.data.icon.name as any}
+                  width={24}
+                  height={24}
+                  class="glow-icon"
+                />
+                <span>{displayText}</span>
+              </li>
+            );
+          })
         }
       </ul>
     </Card>
