@@ -1,8 +1,17 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden; 
+}
+
 :root {
   --primary: #8c5cf5;
-  /* Needed for some hover effects. This is just the R, G and B values of the hex color above */
   --primary-rgb: 140, 92, 245;
-  /* Used for links */
   --primary-light: #a277ff;
   --primary-lightest: #c2a8fd;
 }
@@ -29,17 +38,16 @@
   list-style-type: none;
   padding: 0;
   margin: 0;
+  display: flex;   
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .tech-stack li {
-  display: inline-block;
-  flex-direction: row;
-  align-items: center;
-  gap: .75rem;
-  margin-bottom: .75rem;
-  margin-left: .50rem;
-  padding: .25rem;
+  margin: 0; 
+  padding: .25rem .5rem;
   border: 1px solid rgb(255, 255, 255, .5); 
+  white-space: nowrap; 
 }
 
 .tech-stack li:last-of-type {
@@ -85,6 +93,7 @@ main {
   flex-direction: column;
   gap: 2rem;
   padding: 2rem 0;
+  overflow-x: hidden; 
 }
 
 .glow-icon {
@@ -188,16 +197,18 @@ main {
 @media screen and (max-width: 640px) {
   body {
     padding: 0;
+    overflow-x: hidden; 
   }
 
   main {
-    padding-top: 0;
+    padding: 1rem;
     gap: 1rem;
+    width: 100%;
   }
 
-  .post-header {
-    flex-direction: column;
-    gap: .5rem;
+  .layout-grid {
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
   }
 }
 
