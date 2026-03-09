@@ -7,8 +7,11 @@ import Icon from "../components/Icon.astro";
 import Layout from "../layouts/Layout.astro";
 import { openGraph } from 'spectre:globals';
 
-const posts = await getCollection('posts', (post) => post.data.draft !== true);
-const tags = posts.flatMap((post) => post.data.tags.map((tag) => tag.id));
+const allPosts = await getCollection('posts', (post) => post.data.draft !== true);
+const filteredPosts = allPosts
+  .filter((post) => post.data.createdAt.getTime() <= Date.now()) 
+  .sort((a, b) => b.data.createdAt.getTime() - a.data.createdAt.getTime());
+const tags = filteredPosts.flatMap((post) => post.data.tags.map((tag) => tag.id));
 ---
 <Layout
   title={openGraph.blog.title || "Blog"}
@@ -40,16 +43,24 @@ const tags = posts.flatMap((post) => post.data.tags.map((tag) => tag.id));
 				<h2>Latest Posts</h2>
 			</div>
 			<div class="content-container">
-				{posts.sort((a, b) => b.data.createdAt.getTime() - a.data.createdAt.getTime()).map((post) => (
-					<a href={`/blog/${post.id}`} class="post-container" data-tags={post.data.tags.map((tag) => tag.id).join(",")}>
-						<div class="post-header">
-							<h3>{post.data.title}</h3>
-							<span class="post-date">{post.data.createdAt.toLocaleDateString()}</span>
-						</div>
-						<span>{post.data.description}</span>
-					</a>
-				))}
-			</div>
+        {
+          filteredPosts.map((post) => (
+            <a 
+              href={`/blog/${post.id}`} 
+              class="post-container" 
+              data-tags={post.data.tags.map((tag) => tag.id).join(",")}
+            >
+              <div class="post-header">
+                <h3>{post.data.title}</h3>
+                <span class="post-date">
+                  {post.data.createdAt.toLocaleDateString()}
+                </span>
+              </div>
+              <span>{post.data.description}</span>
+            </a>
+          ))
+        }
+      </div>
 		</Card>
   </div>
 </Layout>
