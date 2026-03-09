@@ -176,7 +176,11 @@ const { Content: About } = await render(about!);
               <div class="post-header">
                 <h3>{post.data.title}</h3>
                 <span class="post-date">
-                  {post.data.createdAt.toLocaleDateString()}
+                  {post.data.createdAt.toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                  })}
                 </span>
               </div>
               <span>{post.data.description}</span>
