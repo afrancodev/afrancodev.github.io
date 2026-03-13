@@ -1,0 +1,230 @@
+---
+title: Linear Search vs. Binary Search
+description: "A practical benchmark and explanation of Linear and Binary search using Java 21."
+image: "../assets/posts/linearsearch-vs-binarysearch.png"
+createdAt: 03-13-2026
+draft: false
+tags:
+    - Java
+    - Algorithms
+    - Tutorial
+    - Performance
+---
+
+## Introduction
+
+In this post, we will look at two common search algorithms—**Linear Search** (often called Normal Search) and **Binary Search**—using a concrete Java implementation to benchmark their performance. We'll use a massive list of 100 million integers to clearly demonstrate the difference in efficiency.
+
+I will provide the complete Java source code at the end of this post, but let’s first break down the core logic for clarity.
+
+## Normal Search (Linear Search)
+
+The `normalSearch` method implements **Linear Search**. This is the most straightforward searching method. It starts at the beginning of the list and checks each element one by one until it finds the target value or reaches the end of the list.
+
+```java
+    private static void linearSearch(List<Integer> arrayList, int number) {
+        for (int i = 0; i < arrayList.size(); i++) {
+            if(arrayList.get(i) == number) {
+                System.out.println("\tLinear Search: Found it at index " + i);
+                return;
+            }
+        }
+        System.out.println("\tLinear Search: Not found.");
+    }
+```
+
+### Performance of Linear Search
+
+The performance of linear search is directly proportional to the size of the list (N).
+
+* **Best Case:** The target is the very first element. Only 1 comparison is needed (O(1)).
+* **Worst Case:** The target is the last element or not in the list at all. We must check all N elements (O(N)).
+* **Average Case:** On average, we will search through about half the list (O(N/2) or simply O(N)).
+
+In our benchmark with 100 million elements, if the random number generated is near the end, this search can take a noticeable amount of time (tens or even hundreds of milliseconds).
+
+## Binary Search
+
+The `binarySearch` method implements a **Recursive Binary Search**. This algorithm is significantly more efficient than linear search, but it comes with one crucial prerequisite: **the list must be sorted.** Our list, populated with numbers from 0 up to 100 million, satisfies this condition.
+
+Binary search works by utilizing a "divide and conquer" strategy:
+
+1. Check the middle element of the current search interval.
+2. If the middle element is the target, we're done.
+3. If the target is smaller than the middle element, repeat the search on the left half.
+4. If the target is larger than the middle element, repeat the search on the right half.
+5. Continue this process, halving the search space each time, until the target is found or the interval is empty.
+
+```java
+    private static void binarySearch(List<Integer> arrayList, int number, int start, int end) {
+        
+        if( start > end) {
+            System.out.println("\tBinary Search: Not found.");
+            return;
+        }
+        
+        int mid = start + ((end-start)/2);
+        int midValue = arrayList.get(mid);
+        
+        if(midValue == number) {
+            System.out.println("\tBinary Search: Found it at index " + mid);
+        } else if(midValue < number) {
+            binarySearch(arrayList, number, mid+1, end);
+        } else {
+            binarySearch(arrayList, number, start, mid-1);
+        }
+   }
+```
+
+Let's break down the key components of this recursive function:
+
+### 1. The Base Case (`start > end`)
+
+This `if` statement is the "guardrail" of the recursion. It prevents the function from calling itself indefinitely. If the `start` index becomes greater than the `end` index, it means the search interval has completely collapsed, and the target number is not present in the list.
+
+### 2. The Step-by-Step Breakdown
+
+Let's visualize how binary search halves the search space. Suppose we are searching for the number **7** in a sorted list: `[1, 3, 5, 7, 9, 11, 13, 15]`.
+
+**Step 1:** Initial call with `start=0`, `end=7`.
+
+* Midpoint is index 3 (value **7**).
+* **Found!** (In this case, we found it immediately, but typically it takes a few more steps).
+
+**Step 2 (Conceptual - searching for 11):** If we were searching for 11 instead:
+
+* Target (11) > MidValue (7), so we search the right half: `[9, 11, 13, 15]`.
+* New `start=4`, `end=7`.
+
+**Step 3:**
+
+* New midpoint is index 5 (value **11**).
+* **Found!**
+
+As you can see, each comparison eliminates half of the remaining data set.
+
+### 3. The Performance of Binary Search (O(log N))
+
+The efficiency of binary search comes from this logarithmic time complexity, O(log N).
+
+* For **10 elements**, it takes at most **4 steps** (2^4 = 16).
+* For **1,000 elements**, it takes at most **10 steps** (2^{10} = 1024).
+* For **100,000,000 elements**, it takes at most **27 steps** (2^{27} \approx 134,000,000).
+
+This difference is staggering. While linear search might do 100 million comparisons in the worst case, binary search will always do fewer than 30.
+
+### 4. Pointers Crossing Over
+
+When searching for a value that *isn't* in the list, the `start` and `end` pointers eventually meet and then cross. This crossover (`start > end`) is the signal that every possible location has been checked.
+
+Imagine searching for **8** in the same list `[1, 3, 5, 7, 9, 11, 13, 15]`:
+
+* Eventually, you'd be looking at the range `[7, 9]`.
+* The midpoint might be index 3 (value 7).
+* Target (8) > 7, so search right: new `start = 4`.
+* Now, the search range is just index 4 (value 9).
+* Midpoint is index 4 (value 9).
+* Target (8) < 9, so search left: new `end = 3`.
+* Now `start` (4) is greater than `end` (3)—the pointers have crossed.
+
+### 5. Managing the Recursion and Call Stack
+
+Since this is a recursive implementation, each call to `binarySearch` adds a new frame to the **Call Stack** in memory.
+
+For our list of 100 million elements, the stack depth will only reach about 27 levels. This is well within safe limits for Java applications and will not cause a `StackOverflowError`.
+
+## Timed execution
+
+Now for the fun part! To prove the difference between these two algorithms, we’ll use a helper function to measure the execution time in nanoseconds and convert it to a more readable millisecond format:
+
+````java
+private static void measureDuration(String label, Runnable task) {
+    long start = System.nanoTime();
+    task.run();
+    long end = System.nanoTime();
+
+    double miliSeconds = (end - start) / 1_000_000.0;
+    System.out.printf("%-45s: %.6f ms%n", label, miliSeconds);
+}
+````
+
+By passing our search functions into this method as Lambdas, we can test them against an ````ArrayList```` containing 100,000,000 elements. We'll pick a random target for each run to see how they behave under different conditions:
+
+````java
+public static void main(String[] args) {
+
+    List<Integer> arrayList = new ArrayList<>(100_000_000);
+    for (int i = 0; i < 100_000_000; i++) {
+        arrayList.add(i);
+    }
+
+    int target = ThreadLocalRandom.current().nextInt(0, 100_000_000);
+
+    System.out.printf("The number we will be searching for is %,d\n\n", target);
+    
+    measureDuration(String.format("Normal Search for %d", target), 
+            () -> linearSearch(arrayList, target));
+
+    measureDuration(String.format("Binary Search for %d", target),
+            () -> binarySearch(arrayList, target, 0, arrayList.size() - 1));
+}
+````
+
+### The Results
+
+The numbers speak for themselves! Here is the output from three different executions:
+
+
+
+#### Execution 1 (Target near the end):
+
+````
+The number we will be searching for is 99 305 144
+
+	Linear Search: Found it at index 99305144
+Normal Search for 99305144                   : 298,046900 ms
+	Binary Search: Found it at index 99305144
+Binary Search for 99305144                   : 0,624900 ms
+````
+
+#### Execution 2 (Target in the middle):
+
+````
+The number we will be searching for is 79 921 793
+
+	Linear Search: Found it at index 79921793
+Normal Search for 79921793                   : 197,271300 ms
+	Binary Search: Found it at index 79921793
+Binary Search for 79921793                   : 0,289800 ms
+```` 
+
+#### Execution 3 (Target near the beginning):
+
+````
+The number we will be searching for is 12 395 033
+
+	Linear Search: Found it at index 12395033
+Normal Search for 12395033                   : 42,172800 ms
+	Binary Search: Found it at index 12395033
+Binary Search for 12395033                   : 0,231900 ms
+
+````
+
+As you can see, **Binary Search** is consistently and significantly faster than **Linear Search**. Even when the **Linear Search** gets "lucky" (Execution 3), **Binary Search** still outperforms it by a massive margin.
+
+Important Note: Keep in mind that **Binary Search** is only an option if your data is already sorted. If the array is unsorted, you'll have to either use **Linear Search** or pay the time cost to sort it first!
+
+
+## Conclusion
+
+Our benchmark clearly demonstrates why understanding algorithmic complexity is crucial.
+
+* **Normal (Linear) Search** is simple to implement but inefficient for large datasets (O(N)).
+* **Binary Search** is incredibly efficient (O(\log N)) but requires the data to be sorted beforehand.
+
+When dealing with massive amounts of data, the choice of algorithm can mean the difference between a search completing in milliseconds versus seconds or even minutes.
+
+
+The code can be found in [here](https://github.com/afrancodev/blog-code-examples/blob/main/src/com/afranco/main/BinarySearch.java).
+
+***Happy coding!***
