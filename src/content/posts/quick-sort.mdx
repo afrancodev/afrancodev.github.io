@@ -1,0 +1,154 @@
+---
+title: "Sorting Frenzy 1 - Quick Sort"
+description: "How Quick Sort works"
+image: "../assets/posts/quick-sort-sorting-frenzy.png"
+createdAt: 03-19-2026
+draft: false
+tags:
+    - Java
+    - Algorithms
+    - Tutorial
+    - Performance
+---
+
+## Introduction
+
+I've decided to improve my knowledge about sorting algorithms and this post is the first of this ***Sorting Frenzy***!!
+After doing a research, I have compiled a small list of sorting algorithms that I will explain in this blog. The first winner is **Quick Sort**!
+
+---
+
+## What is Quick Sort?
+
+> Quicksort is an efficient, general-purpose sorting algorithm. Quicksort was developed by British computer scientist Tony Hoare in 1959 and published in 1961.
+It is still a commonly used algorithm for sorting. Overall, it is slightly faster than merge sort and heapsort for randomized data, particularly on larger distributions. - ***Wikipedia***
+
+Quick Sort is a type of ___divide and conquer___ algorithm. It works by finding a pivot, reorganizing the array by putting smaller values than the pivot at the left and bigger at the right. 
+Then it does the same thing recursively at each side until there is no elements left.
+
+In this post, we’ll analyze a standard Quick Sort implementation and benchmark it with an array of 1,000,000 elements. 
+
+The code we will be analyzing:
+ 
+ ````java
+private static int partition(int[] arr, int low, int high) {
+    int pivot = arr[high];
+    int i = low - 1;
+
+    for (int j = low; j < high; j++) {
+        if (arr[j] <= pivot) {
+            swap(arr, ++i, j);
+        }
+    }
+
+    swap(arr, i + 1, high);
+    return i + 1;
+}
+
+private static void quickSort(int[] arr, int low, int high) {
+    if (low >= high)
+        return;
+
+    int pivotIndex = partition(arr, low, high);
+
+    quickSort(arr, low, pivotIndex - 1);
+    quickSort(arr, pivotIndex + 1, high);
+}
+
+private static void swap(int[] arr, int i, int j) {
+    if (i != j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+}
+````
+
+### Lets break it down
+
+#### Method ***quickSort*** 
+
+This is the entry method for the sort and the one we will call recursively. First we have the base case: ````if (low >= high)````. This will be the exit point of the sort. This will trigger 
+when the sub-array we are sorting has only one element. 
+
+Second, we have to call the ***partition*** method to reorganize the array and return the ``pivotIndex`. Then, we want to call the function again for the partitions at the left and at the right.
+
+#### Method ***partition***
+
+This is the most important part of this sort. It has 2 objectives:
+
+- Choosing a pivot
+    - We can choose any index but for the implementation its easier to choose the last element.
+- Reorganizing the array around the pivot
+    - Values smaller or equal to the pivot go to the left 
+    - Values greater go to the right
+
+For the reorganizing part, we mantain a list of the smaller elements in the beginning of the array and after the loop, we put the pivot next to it.
+
+#### Method ***swap***
+
+This method is just to mantain the logic of swapping values in an array outside of the partition method.
+
+---
+
+If you prefer a visual representation, below is a gif from [geeksforgeeks.org](https://www.geeksforgeeks.org/javascript/quick-sortlomuto-partition-visualization-using-javascript/):
+
+![QuickSort GIF](/img/quick-sort-visualization-geeksforgeeks.gif)
+
+---
+
+### Performance Analysis
+
+
+#### Time Complexity: O(n log n)
+
+In the average and best cases, Quick Sort is incredibly fast. 
+For an array of 1,000,000 elements, the recursion tree is roughly 20 levels deep (2^20 ≈ 1,000,000). 
+Each level of the tree requires O(n) operations to partition the elements, leading to a total complexity of O(n log n).
+
+    - Best Case: O(n log n)
+    - Average Case: O(n log n)
+    - Worst Case: O(n^2) (This occurs if the pivot is always the smallest or largest element, such as in an already sorted array).
+
+#### Space Complexity: O(log n)
+Quick Sort is in-place. It only requires a small amount of memory on the Call Stack for the recursive calls, making it highly memory-efficient.
+
+
+### Benchmarking the Results
+
+Using a function to measure the duration, we tested this implementation with a randomized array of 1,000,000 integers. 
+
+````java
+public static void main(String[] args) {
+    int[] randomArray = ArrayUtils.generateRandomIntegerArray(1_000_000, 1, 1_000_000);
+
+    measure(String.format("Quick Sort array with %d elements", randomArray.length),
+            () -> quickSort(randomArray, 0, randomArray.length - 1));
+
+    if (ArrayUtils.checkSortedArray(randomArray)) {
+        System.out.println("Array is Sorted!");
+    } else {
+        System.out.println("Array is not Sorted!");
+    }
+
+}
+````
+
+When running this, the results are impressive:
+
+````
+Quick Sort array with 1000000 elements took 77,540 ms
+Array is Sorted!
+````
+
+
+In 77,540 ms the algorithm processed a million integers! This speed is why Quick Sort (specifically variants like Dual-Pivot Quick Sort) is the default sorting algorithm for 
+primitive types in Java's ````Arrays.sort()````.
+
+### Conclusion
+
+Quick Sort remains a foundational algorithm for any developer. Its ability to sort vast amounts of data in-place with O(n log n) efficiency makes it a powerful tool. 
+However, remember that for very small arrays, the overhead of recursion can be slower than a simple Insertion Sort.
+Modern libraries often use a "hybrid" approach, switching to Insertion Sort when the sub-array size drops below a certain threshold (usually 10-20 elements).
+
+***Happy coding!***
