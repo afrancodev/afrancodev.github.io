@@ -1,6 +1,16 @@
-Hi !
+export const getExp = () => {
+  const start = new Date('2018-01-01');
+  const now = new Date();
+  let diff = now.getFullYear() - start.getFullYear();
+  if (now.getMonth() < start.getMonth() || (now.getMonth() === start.getMonth() && now.getDate() < start.getDate())) {
+    diff--;
+  }
+  return diff;
+};
 
-I’m <strong>André Franco</strong>, a Full Stack Developer from <strong>Portugal</strong> with <strong>7 years of experience</strong> building scalable, user-focused applications.
+Hi!
+
+I’m **André Franco**, a Full Stack Developer from **Portugal** with **{getExp()} years of experience** building scalable, user-focused applications.
 My work spans both frontend and backend development, with solid expertise in technologies like
 <strong>Angular, Java, Python, PHP</strong>, and <strong>Laravel</strong>.
 
