@@ -1,5 +1,5 @@
 ---
-title: Linear Search vs. Binary Search
+title: "Linear Search vs. Binary Search"
 description: "A practical benchmark and explanation of Linear and Binary search using Java 21."
 image: "../assets/posts/linearsearch-vs-binarysearch.png"
 createdAt: 03-13-2026
@@ -138,13 +138,22 @@ For our list of 100 million elements, the stack depth will only reach about 27 l
 Now for the fun part! To prove the difference between these two algorithms, we’ll use a helper function to measure the execution time in nanoseconds and convert it to a more readable millisecond format:
 
 ````java
-private static void measureDuration(String label, Runnable task) {
+public static <T> T measure(String label, Supplier<T> task) {
     long start = System.nanoTime();
-    task.run();
-    long end = System.nanoTime();
+    try {
+        return task.get();
+    } finally {
+        long end = System.nanoTime();
+        double durationMs = (end - start) / 1_000_000.0;
+        System.out.printf("%s took %.3f ms%n", label, durationMs);
+    }
+}
 
-    double miliSeconds = (end - start) / 1_000_000.0;
-    System.out.printf("%-45s: %.6f ms%n", label, miliSeconds);
+public static void measure(String label, Runnable task) {
+    measure(label, () -> {
+        task.run();
+        return null;
+    });
 }
 ````
 
@@ -161,11 +170,10 @@ public static void main(String[] args) {
     int target = ThreadLocalRandom.current().nextInt(0, 100_000_000);
 
     System.out.printf("The number we will be searching for is %,d\n\n", target);
-    
-    measureDuration(String.format("Normal Search for %d", target), 
-            () -> linearSearch(arrayList, target));
 
-    measureDuration(String.format("Binary Search for %d", target),
+    measure(String.format("Linear Search for %d", target), () -> linearSearch(arrayList, target));
+
+    measure(String.format("Binary Search for %d", target),
             () -> binarySearch(arrayList, target, 0, arrayList.size() - 1));
 }
 ````
@@ -182,7 +190,7 @@ The numbers speak for themselves! Here is the output from three different execut
 The number we will be searching for is 99 305 144
 
 	Linear Search: Found it at index 99305144
-Normal Search for 99305144                   : 298,046900 ms
+Linear Search for 99305144                   : 298,046900 ms
 	Binary Search: Found it at index 99305144
 Binary Search for 99305144                   : 0,624900 ms
 ````
@@ -193,7 +201,7 @@ Binary Search for 99305144                   : 0,624900 ms
 The number we will be searching for is 79 921 793
 
 	Linear Search: Found it at index 79921793
-Normal Search for 79921793                   : 197,271300 ms
+Linear Search for 79921793                   : 197,271300 ms
 	Binary Search: Found it at index 79921793
 Binary Search for 79921793                   : 0,289800 ms
 ```` 
@@ -204,7 +212,7 @@ Binary Search for 79921793                   : 0,289800 ms
 The number we will be searching for is 12 395 033
 
 	Linear Search: Found it at index 12395033
-Normal Search for 12395033                   : 42,172800 ms
+Linear Search for 12395033                   : 42,172800 ms
 	Binary Search: Found it at index 12395033
 Binary Search for 12395033                   : 0,231900 ms
 
@@ -225,6 +233,6 @@ Our benchmark clearly demonstrates why understanding algorithmic complexity is c
 When dealing with massive amounts of data, the choice of algorithm can mean the difference between a search completing in milliseconds versus seconds or even minutes.
 
 
-The code can be found in [here](https://github.com/afrancodev/blog-code-examples/blob/main/src/com/afranco/main/BinarySearch.java).
+The code can be found in [here](https://github.com/afrancodev/blog-code-examples/blob/main/src/com/afranco/main/algo/search/BinarySearch.java).
 
 ***Happy coding!***
